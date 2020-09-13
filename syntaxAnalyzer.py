@@ -1598,4 +1598,60 @@ class SyntaxAnalyzer:
                     return True
         print('Error functionArrList() => ',self.ts[self.index])
         return False
-        
+
+    def MF(self):
+        if self.ts[self.index][0] == 'Identifier':
+            print('Match MF() => ',self.ts[self.index])
+            self.index += 1 
+            if self.AMList3(): #
+                return True
+        else:
+            if self.ts[self.index][0] in ['}','Arithmetaic Operator','Static','Virtual/Override','Identifier','Abstract','Class','Interface']:
+                return True
+        print('Error MF() => ',self.ts[self.index])
+        return False
+    
+    def AMList3(self):
+        if self.ts[self.index][0] == 'Arithmetaic Operator' or self.ts[self.index][0] == ';':
+            if self.allInit(): #
+                if self.ts[self.index][0] == ';':
+                    print('Match AMList3() => ',self.ts[self.index])
+                    self.index += 1 
+                    return True
+        elif self.ts[self.index][0] == '(':
+            if self.method(): #
+                return True
+        print('Error AMList3() => ',self.ts[self.index])
+        return False
+
+    def arr5(self):
+        if self.ts[self.index][0] == ']':
+            print('Match arr5() => ',self.ts[self.index])
+            self.index += 1 
+            if self.arr5List(): #
+                return True
+        print('Error arr5() => ',self.ts[self.index])
+        return False
+
+    def arr5List(self):
+        if self.ts[self.index][0] == ']':
+            print('Match arr5List()-1 => ',self.ts[self.index])
+            self.index += 1 
+            if self.ts[self.index][0] == 'Identifier':
+                print('Match arr5List()-2 => ',self.ts[self.index])
+                self.index += 1 
+                if self.allInit(): #
+                    return True
+        elif self.ts[self.index][0] == ',':
+            print('Match arr5List()-3 => ',self.ts[self.index])
+            self.index += 1 
+            if self.ts[self.index][0] == ']':
+                print('Match arr5List()-4 => ',self.ts[self.index])
+                self.index += 1 
+                if self.ts[self.index][0] == 'Identifier':
+                    print('Match arr5List()-5 => ',self.ts[self.index])
+                    self.index += 1 
+                    if self.allInit(): #
+                        return True
+        print('Error arr5List() => ',self.ts[self.index])
+        return False
