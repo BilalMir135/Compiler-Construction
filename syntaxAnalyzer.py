@@ -10,42 +10,41 @@ class SyntaxAnalyzer:
             print(f'Syntax error at {self.ts[self.index][2]}')
         
     def start(self):
-        if self.ts[self.index][0] in ['Access Modifier','Class','Abstract', 'Interface']:
+        if self.ts[self.index][0] == '$':
+            return True
+        elif self.ts[self.index][0] in ['Access Modifier','Class','Abstract', 'Interface']:
             if self.withAMBody(): #21
                 if self.start(): #12
                     return True
         print('Error start() => ',self.ts[self.index])
         return False
     
-    def withAMBody(self):
+    def withAMBody(self): #checked
         if self.AM_St(): #29
             if self.NBody(): #40
                 return True
         print('Error withAMBody() => ',self.ts[self.index])
         return False
     
-    def AM_St(self):
+    def AM_St(self): #checked
         if self.ts[self.index][0] == 'Access Modifier':
             print('Match AM_St() => ',self.ts[self.index])
             self.index += 1
             return True
-        elif self.ts[self.index][0] in ['Constant','Static', 'Virtual', 'Override', 'Void','[', 'Identifier','Class','Abstract', 'Interface']:
+        elif self.ts[self.index][0] in ['Constant','Static', 'Virtual/Override', 'Data Type', 'Void','[', 'Identifier','Class','Abstract', 'Interface']:
             return True
-        else:
-            print('Error AM_St() => ',self.ts[self.index])
-            return False
+        print('Error AM_St() => ',self.ts[self.index])
+        return False
         
-    def NBody(self):
+    def NBody(self): #checked
         if self.classSt(): #49
             return True
         elif self.interfaceSt(): #70
             return True
-        else:
-            print('Error NBody() => ',self.ts[self.index])
-            return False
-
-        
-    def classSt(self):
+        print('Error NBody() => ',self.ts[self.index])
+        return False
+     
+    def classSt(self): #checked
         if self.abstractSt(): #89
             if self.ts[self.index][0] == 'Class':
                 print('Match classSt()-1 => ',self.ts[self.index])
@@ -65,7 +64,7 @@ class SyntaxAnalyzer:
         print('Error classSt() => ',self.ts[self.index])
         return False
         
-    def interfaceSt(self):
+    def interfaceSt(self): #checked
         if self.ts[self.index][0] == 'Interface':
             print('Match interfaceSt()-1 => ',self.ts[self.index])
             self.index += 1
@@ -83,7 +82,7 @@ class SyntaxAnalyzer:
         print('Error interfaceSt() => ',self.ts[self.index])
         return False
         
-    def abstractSt(self):
+    def abstractSt(self): #checked
         if self.ts[self.index][0] == 'Abstract':
             print('Match abstractSt() => ',self.ts[self.index])
             self.index += 1
@@ -93,7 +92,7 @@ class SyntaxAnalyzer:
         print('Error abstractSt() => ',self.ts[self.index])
         return False
         
-    def inheritSt(self):
+    def inheritSt(self): #checked
         if self.ts[self.index][0] == ':':
             print('Match inheritSt()-1 => ',self.ts[self.index])
             self.index += 1
@@ -101,16 +100,15 @@ class SyntaxAnalyzer:
                 print('Match inheritSt()-2 => ',self.ts[self.index])
                 self.index += 1
                 return True
-            else:
-                print('Error inheritSt()-1 => ',self.ts[self.index])
-                return False
+            print('Error inheritSt()-1 => ',self.ts[self.index])
+            return False
         elif self.ts[self.index][0] == '{':
             return True
         print('Error inheritSt()-2 => ',self.ts[self.index])
         return False
         
-    def classList(self):
-        if self.ts[self.index][0] in ['Constant', 'Access Modifier','Static', 'Virtual', 'Override', 'Data Type' 'Void', 'Identifier','Class','Abstract', 'Interface']:
+    def classList(self): #checked
+        if self.ts[self.index][0] in ['Constant', 'Access Modifier','Static', 'Virtual/Override', 'Data Type' 'Void', 'Identifier','Class','Abstract', 'Interface']:
             if self.withAM(): #145
                 if self.classList():
                     return True
@@ -120,29 +118,28 @@ class SyntaxAnalyzer:
         print('Error classList() => ',self.ts[self.index])
         return False
             
-    def interfaceMethod2(self):
+    def interfaceMethod2(self): #checked
         if self.interfaceMethod():
             if self.ts[self.index][0] == ';': 
                     print('Match interfaceMethod2() => ',self.ts[self.index])
                     self.index += 1
                     if self.interfaceMethod2(): #153
                         return True
-            else:
-                print('Error interfaceMethod2()-1 => ',self.ts[self.index])
-                return False
-        elif self.ts[self.index][0] == ')':
+            print('Error interfaceMethod2()-1 => ',self.ts[self.index])
+            return False
+        elif self.ts[self.index][0] == '}':
             return True
         print('Error interfaceMethod2()-2 => ',self.ts[self.index])
         return False
         
-    def withAM(self):
+    def withAM(self): #checked
         if self.AM_St(): #29
             if self.staticOrVoid(): #173
                 return True
         print('Error interfaceMethod2()-2 => ',self.ts[self.index])
         return False
     
-    def interfaceMethod(self): #doubt 2538
+    def interfaceMethod(self): #doubt 2538 #checked
         if self.ts[self.index][0] == 'Void' or self.DataTypesForConst(): #189
             if self.ts[self.index][0] == 'Void':
                 self.index += 1
@@ -161,14 +158,14 @@ class SyntaxAnalyzer:
         print('Error interfaceMethod() => ',self.ts[self.index])
         return False
         
-    def staticOrVoid(self):
+    def staticOrVoid(self): #checked
         if self.ts[self.index][0] == 'Static':
             print('Match staticOrVoid() => ',self.ts[self.index])
             self.index += 1
             if self.AMList(): #215
                 return True
-        elif self.ts[self.index][0] == 'Override':
-            if self.override(): #224
+        elif self.ts[self.index][0] == 'Virtual/Override':
+            if self.virtualOverride(): #224
                 return True
         elif self.ts[self.index][0] in ['Data Type', 'Void', 'Identifier','Constant']:
             if self.AMList(): #215
@@ -176,7 +173,7 @@ class SyntaxAnalyzer:
         print('Error staticOrVoid() => ',self.ts[self.index])
         return False
            
-    def DataTypesForConst(self):
+    def DataTypesForConst(self): #checked
         if self.ts[self.index][0] == 'Data Type':
             print('Match DataTypesForConst()-1 => ',self.ts[self.index])
             self.index += 1
@@ -190,7 +187,7 @@ class SyntaxAnalyzer:
         print('Error DataTypesForConst() => ',self.ts[self.index])
         return False
         
-    def args(self):
+    def args(self): #checked
         if self.ts[self.index][0] == 'Data Type' or self.ts[self.index][0] == 'Identifier':
             if self.argsList(): #250
                 return True
@@ -199,22 +196,21 @@ class SyntaxAnalyzer:
         print('Error args() => ',self.ts[self.index])
         return False
     
-    def AMList(self):
+    def AMList(self): #checked
         if self.AMList2(): #264
             return True
         elif self.NBody(): #40
             return True
-        else:
-            print('Error AMList() => ',self.ts[self.index])
-            return False
+        print('Error AMList() => ',self.ts[self.index])
+        return False
         
-    def override(self):
-        if self.ts[self.index][0] == 'Override':
-            print('Match override() => ',self.ts[self.index])
+    def virtualOverride(self): #checked
+        if self.ts[self.index][0] == 'Virtual/Override':
+            print('Match virtualOverride() => ',self.ts[self.index])
             self.index += 1
-            if self.overrideList(): #282
+            if self.virtualOverrideList(): #282
                 return True
-        print('Error override() => ',self.ts[self.index])
+        print('Error virtualOverride() => ',self.ts[self.index])
         return False
         
     def DataType2List(self): #2D-array
@@ -232,7 +228,7 @@ class SyntaxAnalyzer:
         print('Error DataType2List() => ',self.ts[self.index])
         return False
         
-    def argsList(self):
+    def argsList(self): #checked
         if self.argsDataType(): #294
             if self.argsSt(): #304
                 return True
@@ -245,7 +241,7 @@ class SyntaxAnalyzer:
         print('Error argsList() => ',self.ts[self.index])
         return False
         
-    def AMList2(self):
+    def AMList2(self): #checked
         if self.constSt(): #325
             return True
         elif self.DT_Types(): #341
@@ -260,20 +256,28 @@ class SyntaxAnalyzer:
                 if self.method(): #362
                     return True
         print('Error AMList2() => ',self.ts[self.index])
-        return True
+        return False
         
-    def overrideList(self):
+    def virtualOverrideList(self): #checked
         if self.ts[self.index][0] == 'Data Type' or self.ts[self.index][0] == 'Void':
             if self.DT_Types(): #341
                 if self.ts[self.index][0] == 'Identifier':
-                    print('Match overrideList() => ',self.ts[self.index])
+                    print('Match virtualOverrideList()-1 => ',self.ts[self.index])
                     self.index += 1
                     if self.method(): #362
                         return True
-        print('Error overrideList() => ',self.ts[self.index])
+            elif self.ts[self.index][0] == 'Void':
+                print('Match virtualOverrideList()-2 => ',self.ts[self.index])
+                self.index += 1
+                if self.ts[self.index][0] == 'Identifier':
+                    print('Match virtualOverrideList()-3 => ',self.ts[self.index])
+                    self.index += 1
+                    if self.method(): #
+                        return True
+        print('Error virtualOverrideList() => ',self.ts[self.index])
         return False
             
-    def argsDataType(self):
+    def argsDataType(self): #checked
         if self.ts[self.index][0] == 'Data Type':
             print('Match argsDataType() => ',self.ts[self.index])
             self.index += 1
@@ -282,7 +286,7 @@ class SyntaxAnalyzer:
         print('Error argsDataType() => ',self.ts[self.index])
         return False
     
-    def argsSt(self):
+    def argsSt(self): #checked
         if self.ts[self.index][0] == ',':
             print('Match argsSt() => ',self.ts[self.index])
             self.index += 1
@@ -293,16 +297,15 @@ class SyntaxAnalyzer:
         print('Error argsSt() => ',self.ts[self.index])
         return False
     
-    def ID3St(self):
+    def ID3St(self): #checked
         if self.argsObj(): #391
             return True
         elif self.argsArr5(): #405
             return True
-        else:
-            print('Error ID3St() => ',self.ts[self.index])
-            return False
+        print('Error ID3St() => ',self.ts[self.index])
+        return False
     
-    def constSt(self):
+    def constSt(self): #checked
         if self.ts[self.index][0] == 'Constant':
             print('Match constSt()-1 => ',self.ts[self.index])
             self.index += 1
@@ -314,10 +317,11 @@ class SyntaxAnalyzer:
                         if self.ts[self.index][0] == ';':
                             print('Match constSt()-3 => ',self.ts[self.index])
                             self.index += 1
+                            return True
         print('Error constSt() => ',self.ts[self.index])
         return False
     
-    def DT_Types(self):
+    def DT_Types(self): #checked
         if self.ts[self.index][0] == 'Data Type':
             print('Match DT_Types()-1 => ',self.ts[self.index])
             self.index += 1
@@ -337,7 +341,7 @@ class SyntaxAnalyzer:
         print('Error DT_Types() => ',self.ts[self.index])
         return False
         
-    def method(self):
+    def method(self): #checked
         if self.ts[self.index][0] == '(':
             print('Match method()-1 => ',self.ts[self.index])
             self.index += 1
@@ -357,7 +361,7 @@ class SyntaxAnalyzer:
         print('Error method() => ',self.ts[self.index])
         return False
         
-    def argsDTList(self):
+    def argsDTList(self): #checked
         if self.ts[self.index][0] == 'Identifier':
             print('Match argsDTList() => ',self.ts[self.index])
             self.index += 1
@@ -368,7 +372,7 @@ class SyntaxAnalyzer:
         print('Error argsDTList() => ',self.ts[self.index])
         return False
     
-    def argsObj(self):
+    def argsObj(self): #checked
         if self.ts[self.index][0] == 'Identifier':
             print('Match argsObj() => ',self.ts[self.index])
             self.index += 1
@@ -397,7 +401,7 @@ class SyntaxAnalyzer:
         print('Error allInit() => ',self.ts[self.index])
         return False
             
-    def DT2List(self):
+    def DT2List(self): #checked
         if self.ts[self.index][0] == '[':
             print('Match DT2List() => ',self.ts[self.index])
             self.index += 1 
@@ -409,7 +413,7 @@ class SyntaxAnalyzer:
         print('Error DT2List() => ',self.ts[self.index])
         return False
     
-    def construct(self):
+    def construct(self): #checked
         if self.ts[self.index][0] == '(':
             print('Match construct()-1 => ',self.ts[self.index])
             self.index += 1
@@ -425,10 +429,11 @@ class SyntaxAnalyzer:
                                 if self.ts[self.index][0] == '}':
                                     print('Match construct()-4 => ',self.ts[self.index])
                                     self.index += 1
+                                    return True
         print('Error construct() => ',self.ts[self.index])
         return False
         
-    def MST(self):
+    def MST(self): #checked
         if self.ts[self.index][0] in ['Constant','Static','Identifier','Data Type', 'For', 'Continue', 'Break', 'Return', 'If', 'This']:
             if self.SST(): #526
                 if self.MST(): #456
@@ -438,12 +443,13 @@ class SyntaxAnalyzer:
         print('Error MST() => ',self.ts[self.index])
         return False
         
-    def argsInit(self):
+    def argsInit(self): #checked
         if self.ts[self.index][0] == 'Assignment Operator':
             print('Match argsInit()-1 => ',self.ts[self.index])
             self.index += 1
-            if self.OE2(): #575
-                return True
+            if self.ts[self.index][0] in ['Identifier','Integer Constant','Float Constant','Char Constant','String Constant','NOT','(','Increment/Decrement Operator']:
+                if self.OE2(): #575
+                    return True
         elif self.ts[self.index][0] == 'New':
             print('Match argsInit()-2 => ',self.ts[self.index])
             self.index += 1
@@ -455,11 +461,10 @@ class SyntaxAnalyzer:
         else:
             if self.ts[self.index][0] == ')' or self.ts[self.index][0] == ',':
                 return True
-            else:
-                print('Error argsInit() => ',self.ts[self.index])
-                return False
+        print('Error argsInit() => ',self.ts[self.index])
+        return False
             
-    def argsArr5List(self):
+    def argsArr5List(self): #checked
         if self.ts[self.index][0] == ']':
             print('Match argsArr5List()-1 => ',self.ts[self.index])
             self.index += 1
@@ -491,7 +496,7 @@ class SyntaxAnalyzer:
         print('Error assign() => ',self.ts[self.index])
         return False
         
-    def DT2list2(self): #2D-array
+    def DT2list2(self): #2D-array #checked
         if self.ts[self.index][0] == ']':
             print('Match DT2list2()-1 => ',self.ts[self.index])
             self.index += 1
@@ -506,7 +511,7 @@ class SyntaxAnalyzer:
         print('Error DT2list2() => ',self.ts[self.index])
         return False
         
-    def superClass(self):
+    def superClass(self): #checked
         if self.ts[self.index][0] == ':':
             print('Match superClass()-1 => ',self.ts[self.index])
             self.index += 1
@@ -520,6 +525,7 @@ class SyntaxAnalyzer:
                         if self.ts[self.index][0] == ')':
                             print('Match superClass()-4 => ',self.ts[self.index])
                             self.index += 1
+                            return True
             print('Error superClass()-1 => ',self.ts[self.index])
             return False
         elif self.ts[self.index][0] == '{':
@@ -527,7 +533,7 @@ class SyntaxAnalyzer:
         print('Error superClass()-2 => ',self.ts[self.index])
         return False
     
-    def SST(self):
+    def SST(self): #checked
         if self.withId(): #636
             if self.ts[self.index][0] == ';':
                 print('Match SST()-1 => ',self.ts[self.index])
@@ -559,10 +565,11 @@ class SyntaxAnalyzer:
         elif self.ts[self.index][0] == 'Return':
             print('Match SST()-7 => ',self.ts[self.index])
             self.index += 1
-            if self.ts[self.index][0] == ';':
-                print('Match SST()-8 => ',self.ts[self.index])
-                self.index += 1
-                return True
+            if self.returnSt(): #
+                if self.ts[self.index][0] == ';':
+                    print('Match SST()-8 => ',self.ts[self.index])
+                    self.index += 1
+                    return True
         elif self.ts[self.index][0] == 'This':
             print('Match SST()-9 => ',self.ts[self.index])
             self.index += 1
@@ -577,7 +584,15 @@ class SyntaxAnalyzer:
         print('Error SST() => ',self.ts[self.index])
         return False
     
-    def OE2(self):
+    def returnSt(self): #checked
+        if self.OE(): #
+            return True
+        elif self.ts[self.index][0] == ';':
+            return True
+        print('Error returnSt() => ',self.ts[self.index])
+        return False
+
+    def OE2(self): #checked
         if self.FWID(): #692
             if self.alles(): #718
                 return True
@@ -589,7 +604,7 @@ class SyntaxAnalyzer:
         print('Error OE2() => ',self.ts[self.index])
         return False
     
-    def assignList(self):
+    def assignList(self): #checked
         if self.ts[self.index][0] == 'Identifier' or self.ts[self.index][0] == 'Data Type':
             print('Match assignList() => ',self.ts[self.index])
             self.index += 1
@@ -598,7 +613,7 @@ class SyntaxAnalyzer:
         print('Error assignList() => ',self.ts[self.index])
         return False
     
-    def BInit(self):
+    def BInit(self): #checked
         if self.ts[self.index][0] == '{':
             print('Match BInit() => ',self.ts[self.index])
             self.index += 1
@@ -626,12 +641,12 @@ class SyntaxAnalyzer:
         print('Error values() => ',self.ts[self.index])
         return False
     
-    def params(self):
-        if self.ts[self.index][0] in ['{','Identifier','New','Integer Constant','Float Constant','Char Constant','String Constant', 'Logical Operator','(', 'Increment/Decrement Opeartor']: #Not !
+    def params(self): #checked
+        if self.ts[self.index][0] in ['{','Identifier','New','Integer Constant','Float Constant','Char Constant','String Constant', 'NOT','(', 'Increment/Decrement Opeartor']: #Not !
             if self.param2(): #823
                 return True
         else:
-            if self.ts[self.index][0] == '}':
+            if self.ts[self.index][0] == ')':
                 return True
         print('Error params() => ',self.ts[self.index])
         return False
@@ -645,7 +660,7 @@ class SyntaxAnalyzer:
         print('Error withId() => ',self.ts[self.index])
         return False
     
-    def withStaticConstDT(self):
+    def withStaticConstDT(self): #checked
         if self.staticSt(): #858
             if self.constSt2(): #868
                 if self.withDT(): #879
@@ -653,7 +668,7 @@ class SyntaxAnalyzer:
         print('Error withStaticConstDT() => ',self.ts[self.index])
         return False
             
-    def forSt(self):
+    def forSt(self): #checked
         if self.ts[self.index][0] == 'For':
             print('Match forSt()-1 => ',self.ts[self.index])
             self.index += 1
@@ -677,7 +692,7 @@ class SyntaxAnalyzer:
         print('Error forSt() => ',self.ts[self.index])
         return False
     
-    def ifElse(self):
+    def ifElse(self): #checked
         if self.ts[self.index][0] == 'If':
             print('Match ifElse()-1 => ',self.ts[self.index])
             self.index += 1
@@ -694,7 +709,7 @@ class SyntaxAnalyzer:
         print('Error ifElse() => ',self.ts[self.index])
         return False
     
-    def FWID(self):
+    def FWID(self): #checked
         if self.const(): #956
             return True
         elif self.ts[self.index][0] == 'NOT':
@@ -720,7 +735,7 @@ class SyntaxAnalyzer:
         print('Error FWID() => ',self.ts[self.index])
         return False
     
-    def alles(self):
+    def alles(self): #checked
         if self.OE_(): #1036
             if self.ts[self.index][0] in ['Arithmetaic Operator', 'Logical Operator', 'Relational Operator']:
                 if self.alles(): #718
@@ -749,8 +764,8 @@ class SyntaxAnalyzer:
         print('Error alles() => ',self.ts[self.index])
         return False
     
-    def assign3(self):
-         if self.ts[self.index][0] in ['.','[', '(', 'Increment/Decrement Opeartor', 'Arithmetaic Operator', 'Relational Operator', 'Assignment Operator']:
+    def assign3(self): #checked
+        if self.ts[self.index][0] in ['.','[', '(', 'Increment/Decrement Opeartor', 'Arithmetaic Operator', 'Relational Operator','Logical Operator', 'Assignment Operator']:
                 if self.ts[self.index][0] == 'Assignment Operator':
                     if self.assign(): #482
                         return True
@@ -761,13 +776,13 @@ class SyntaxAnalyzer:
                     if self.OEList(): #1078
                         if self.alles(): #718
                             return True
-                else:
-                    if self.ts[self.index][0] == ';' or self.ts[self.index][0] == ',':
-                        return True
-                print('Error assign3() => ',self.ts[self.index])
-                return False
+        else:
+            if self.ts[self.index][0] == ';' or self.ts[self.index][0] == ',':
+                return True
+        print('Error assign3() => ',self.ts[self.index])
+        return False
     
-    def assignList2(self):
+    def assignList2(self): #checked
         if self.ts[self.index][0] == '[':
             print('Match assignList2()-1 => ',self.ts[self.index])
             self.index += 1
@@ -782,13 +797,13 @@ class SyntaxAnalyzer:
                     print('Match assignList2()-3 => ',self.ts[self.index])
                     self.index += 1
                     return True
-            print('Error assignList2() => ',self.ts[self.index])
-            return False
+        print('Error assignList2() => ',self.ts[self.index])
+        return False
         
-    def BInitList(self):
-        if self.ts[self.index][0] in ['Identifier','Integer Constant','Float Constant','Char Constant','String Constant', 'NOT', '(', 'Increment/Decrement Opeartor']:
+    def BInitList(self): #checked
+        if self.ts[self.index][0] in ['Identifier','Integer Constant','Float Constant','Char Constant','String Constant', '}' 'NOT', '(', 'Increment/Decrement Opeartor']:
             if self.arrConst0(): #1114
-                if self.ts[self.index][0] == '{':
+                if self.ts[self.index][0] == '}':
                     print('Match BInitList()-1 => ',self.ts[self.index])
                     self.index += 1
                     return True
@@ -800,14 +815,14 @@ class SyntaxAnalyzer:
         print('Error BInitList() => ',self.ts[self.index])
         return False
     
-    def init(self):
+    def init(self): #checked
         if self.OE2(): #577
             if self.init3(): #1134
                 return True
         print('Error init() => ',self.ts[self.index])
         return False
     
-    def init2(self):
+    def init2(self): #checked
         if self.assign(): #482
             return True
         elif self.functionCall(): #1150
@@ -825,7 +840,7 @@ class SyntaxAnalyzer:
         print('Error init2() => ',self.ts[self.index])
         return False
     
-    def param2(self):
+    def param2(self): #checked
         if self.OE(): #936
             if self.param3(): #1189
                 return True
@@ -860,7 +875,7 @@ class SyntaxAnalyzer:
         print('Error list_() => ',self.ts[self.index])
         return False
     
-    def staticSt(self):
+    def staticSt(self): #checked
         if self.ts[self.index][0] == 'Static':
             print('Match staticSt() => ',self.ts[self.index])
             self.index += 1
@@ -870,7 +885,7 @@ class SyntaxAnalyzer:
         print('Error staticSt() => ',self.ts[self.index])
         return False
     
-    def constSt2(self):
+    def constSt2(self): #checked
         if self.ts[self.index][0] == 'Constant':
             print('Match constSt2() => ',self.ts[self.index])
             self.index += 1
@@ -881,7 +896,7 @@ class SyntaxAnalyzer:
         print('Error constSt2() => ',self.ts[self.index])
         return False
     
-    def withDT(self):
+    def withDT(self): #checked
         if self.ts[self.index][0] == 'Data Type':
             print('Match withDT() => ',self.ts[self.index])
             self.index += 1
@@ -890,7 +905,7 @@ class SyntaxAnalyzer:
         print('Error withDT() => ',self.ts[self.index])
         return False
             
-    def C1(self):
+    def C1(self): #checked
         if self.OE2(): #577
             return True
         elif self.withDT(): #879
@@ -900,7 +915,7 @@ class SyntaxAnalyzer:
         print('Error C1() => ',self.ts[self.index])
         return False
     
-    def C2(self):
+    def C2(self): #checked
         if self.OE(): #936
             return True
         elif self.ts[self.index][0] == ';':
@@ -908,7 +923,7 @@ class SyntaxAnalyzer:
         print('Error C2() => ',self.ts[self.index])
         return False
     
-    def C3(self):
+    def C3(self): #checked
         if self.OE2(): #577
             return True
         elif self.ts[self.index][0] == ')':
@@ -916,7 +931,7 @@ class SyntaxAnalyzer:
         print('Error C3() => ',self.ts[self.index])
         return False
     
-    def checkTerminator(self):
+    def checkTerminator(self): #checked
         if self.ts[self.index][0] == ';':
             print('Match checkTerminator() => ',self.ts[self.index])
             self.index += 1
@@ -924,7 +939,7 @@ class SyntaxAnalyzer:
         print('Error checkTerminator() => ',self.ts[self.index])
         return False
     
-    def body(self):
+    def body(self): #checked
         if self.SST(): #527
             return True
         elif self.ts[self.index][0] == '{':
@@ -945,7 +960,7 @@ class SyntaxAnalyzer:
         print('Error OE() => ',self.ts[self.index])
         return False
     
-    def ifList(self):
+    def ifList(self): #checked
         if self.ts[self.index][0] == 'Else':
             print('Match ifList() => ',self.ts[self.index])
             self.index += 1        
@@ -958,7 +973,7 @@ class SyntaxAnalyzer:
         print('Error ifList()-2 => ',self.ts[self.index])
         return False
     
-    def const(self):
+    def const(self): #checked
         if self.ts[self.index][0] == 'Integer Constant':
             print('Match const()-1 => ',self.ts[self.index])
             self.index += 1
@@ -1018,20 +1033,40 @@ class SyntaxAnalyzer:
         print('Error F() => ',self.ts[self.index])
         return False
     
-    def IDSt2(self):
+    def IDSt(self): #checked
         if self.ts[self.index][0] == 'Identifier':
-            print('Match F()-1 => ',self.ts[self.index])
+            print('Match IDSt() => ',self.ts[self.index])
+            self.index += 1
+            if self.IDStList(): 
+                return True
+        print('Error IDST() => ',self.ts[self.index])
+        return False
+
+    def IDStList(self): #checked
+        if self.ts[self.index][0] == '.':
+            print('Match IDStList() => ',self.ts[self.index])
+            self.index += 1
+            if self.IDSt(): #
+                return True
+        elif self.ts[self.index][0] == '(':
+            return True
+        print('Error IDStList() => ',self.ts[self.index])
+        return False
+
+    def IDSt2(self): #checked
+        if self.ts[self.index][0] == 'Identifier':
+            print('Match IDSt2()-1 => ',self.ts[self.index])
             self.index += 1
             if self.chain(): #1258
                 return True
         elif self.ts[self.index][0] == 'This':
-            print('Match F()-2 => ',self.ts[self.index])
+            print('Match IDSt2()-2 => ',self.ts[self.index])
             self.index += 1
             if self.ts[self.index][0] == '.':
-                print('Match F()-3 => ',self.ts[self.index])
+                print('Match IDSt2()-3 => ',self.ts[self.index])
                 self.index += 1
                 if self.ts[self.index][0] == 'Identifier':
-                    print('Match F()-4 => ',self.ts[self.index])
+                    print('Match IDSt2()-4 => ',self.ts[self.index])
                     self.index += 1
                     if self.chain(): #1258
                         return True
@@ -1080,7 +1115,7 @@ class SyntaxAnalyzer:
         print('Error RE_()-1 => ',self.ts[self.index])
         return False
     
-    def OEList(self):
+    def OEList(self): #checked
         if self.ts[self.index][0] in ['.','[','(','Increment/Decrement Opeartor']:
             if self.ts[self.index][0] == '(':
                 if self.funcCallOE(): #1289
@@ -1095,12 +1130,12 @@ class SyntaxAnalyzer:
                 if self.incDec(): #1181
                     return True
         else:
-            if self.ts[self.index][0] in ['Arithmetaic Operator','}','Relational Operator','Logical Operator',';',')',',','']:
+            if self.ts[self.index][0] in ['Arithmetaic Operator','}','Relational Operator','Logical Operator',';',')',',',']']:
                 return True
         print('Error OEList() => ',self.ts[self.index])
         return False
     
-    def assignList3(self):
+    def assignList3(self): #checked
         if self.ts[self.index][0] == ']':
             print('Match assignList3()-1 => ',self.ts[self.index])
             self.index += 1
@@ -1112,20 +1147,21 @@ class SyntaxAnalyzer:
                 if self.ts[self.index][0] == ']':
                     print('Match assignList3()-1 => ',self.ts[self.index])
                     self.index += 1
+                    return True
         print('Error assignList3() => ',self.ts[self.index])
         return False
         
-    def arrConst0(self):
+    def arrConst0(self): #checked
         if self.ts[self.index][0] in ['Identifier','Integer Constant','Float Constant','Char Constant','String Constant', 'NOT', '(', 'Increment/Decrement Opeartor']:
             if self.arrConst(): #1322
                 return True
-            else:
-                if self.ts[self.index][0] == '}':
-                    return True
-            print('Error arrConst0() => ',self.ts[self.index])
-            return False
+        else:
+            if self.ts[self.index][0] == '}':
+                return True
+        print('Error arrConst0() => ',self.ts[self.index])
+        return False
     
-    def arrConst2(self):
+    def arrConst2(self): #checked
         if self.ts[self.index][0] == '{':
             if self.arrConst3(): #1239
                 return True
@@ -1135,7 +1171,7 @@ class SyntaxAnalyzer:
         print('Error arrConst2() => ',self.ts[self.index])
         return False
         
-    def init3(self):
+    def init3(self): #checked
         if self.ts[self.index][0] == ',':
             print('Match init3()-1 => ',self.ts[self.index])
             self.index += 1
@@ -1185,7 +1221,7 @@ class SyntaxAnalyzer:
         print('Error functionList()-2 => ',self.ts[self.index])
         return False
     
-    def arr4List(self):
+    def arr4List(self): #checked
         if self.ts[self.index][0] in ['.','Assignment Operator', 'Increment/Decrement Operator']:
             if self.ts[self.index][0] == '.':
                 print('Match arr4List()-1 => ',self.ts[self.index])
@@ -1207,7 +1243,7 @@ class SyntaxAnalyzer:
         print('Error arr4List() => ',self.ts[self.index])
         return False
 
-    def arr4DOTList(self):
+    def arr4DOTList(self): #checked
         if self.ts[self.index][0] in ['.','Assignment Operator','Increment/Decrement Operator','(','[']:
             if self.ts[self.index][0] == 'Assignment Operator':
                 if self.assign(): #
@@ -1244,7 +1280,6 @@ class SyntaxAnalyzer:
         print('Error functionList2() => ',self.ts[self.index])
         return False
 
-
     def objectCall(self):
         if self.ts[self.index][0] == '.':
             print('Match objectCall()-1 => ',self.ts[self.index])
@@ -1257,9 +1292,9 @@ class SyntaxAnalyzer:
         print('Error objectCall() => ',self.ts[self.index])
         return False
     
-    def arr4(self):
+    def arr4(self): #checked
         if self.arr8(): #1361
-            if self.arr4(): #1174
+            if self.arr4List(): #1174
                 return True
         print('Error arr4() => ',self.ts[self.index])
         return False
@@ -1272,7 +1307,7 @@ class SyntaxAnalyzer:
         print('Error incDec() => ',self.ts[self.index])
         return False
     
-    def param3(self):
+    def param3(self): #checked
         if self.ts[self.index][0] == ',':
             print('Match incDec() => ',self.ts[self.index])
             self.index += 1
@@ -1303,7 +1338,7 @@ class SyntaxAnalyzer:
         print('Error obj() => ',self.ts[self.index])
         return False
     
-    def DTList(self):
+    def DTList(self): #checked
         if self.ts[self.index][0] == 'Identifier':
             print('Match DTList() => ',self.ts[self.index])
             self.index += 1
@@ -1321,7 +1356,7 @@ class SyntaxAnalyzer:
         print('Error AE() => ',self.ts[self.index])
         return False
     
-    def incDecList(self):
+    def incDecList(self): #checked
         if self.ts[self.index][0] == 'Identifier':
             print('Match incDecList()-1 => ',self.ts[self.index])
             self.index += 1
@@ -1341,7 +1376,7 @@ class SyntaxAnalyzer:
         print('Error incDecList() => ',self.ts[self.index])
         return False
     
-    def chain(self):
+    def chain(self): #checked
         if self.ts[self.index][0] in ['(','.','[']:
             if self.ts[self.index][0] == '(':
                 if self.functionCall3(): #1410
@@ -1372,7 +1407,7 @@ class SyntaxAnalyzer:
         print('Error E() => ',self.ts[self.index])
         return False
     
-    def funcCallOE(self):
+    def funcCallOE(self): #checked
         if self.ts[self.index][0] == '(':
             print('Match funcCallOE()-1 => ',self.ts[self.index])
             self.index += 1
@@ -1380,10 +1415,33 @@ class SyntaxAnalyzer:
                 if self.ts[self.index][0] == ')':
                     print('Match funcCallOE()-2 => ',self.ts[self.index])
                     self.index += 1
+                    if self.funListOE(): #
+                        return True
         print('Error funcCallOE() => ',self.ts[self.index])
         return False
+
+    def funListOE(self): #checked
+        if self.ts[self.index][0] == '[' or self.ts[self.index][0] == '.':
+            if self.ts[self.index][0] == '.':
+                print('Match funListOE()-1 => ',self.ts[self.index])
+                self.index += 1
+                if self.ts[self.index][0] == 'Identifier':
+                    print('Match funListOE()-2 => ',self.ts[self.index])
+                    self.index += 1
+                    if self.OEList(): #
+                        return True
+            elif self.functionArr(): #
+                if self.arrOEValue():
+                    return True
+            print('Error funListOE()-1 => ',self.ts[self.index])
+            return False
+        else:
+            if self.ts[self.index][0] in ['Arithmetic Operator','}','Retional Operator','Logical Operator',';',')',',',']']:
+                return True
+        print('Error funListOE()-2 => ',self.ts[self.index])
+        return False
          
-    def objCallOE(self):
+    def objCallOE(self): #checked
         if self.ts[self.index][0] == '.':
             print('Match funcCallOE()-1 => ',self.ts[self.index])
             self.index += 1
@@ -1395,7 +1453,7 @@ class SyntaxAnalyzer:
         print('Error objCallOE() => ',self.ts[self.index])
         return False
     
-    def ArrOE(self):
+    def ArrOE(self): #checked
         if self.ts[self.index][0] == '[':
             print('Match ArrOE() => ',self.ts[self.index])
             self.index += 1
@@ -1405,14 +1463,14 @@ class SyntaxAnalyzer:
         print('Error ArrOE() => ',self.ts[self.index])
         return False
     
-    def arrConst(self):
+    def arrConst(self): #checked
         if self.OE(): #936
             if self.ACL(): #1491
                 return True
         print('Error arrConst() => ',self.ts[self.index])
         return False
     
-    def arrConst3(self):
+    def arrConst3(self): #checked
         if self.ts[self.index][0] == '{':
             print('Match arrConst3()-1 => ',self.ts[self.index])
             self.index += 1
@@ -1444,7 +1502,7 @@ class SyntaxAnalyzer:
         print('Error objectCallList() => ',self.ts[self.index])
         return False
     
-    def arr8(self):
+    def arr8(self): #checked
         if self.ts[self.index][0] == '[':
             print('Match arr8() => ',self.ts[self.index])
             self.index += 1
@@ -1593,18 +1651,6 @@ class SyntaxAnalyzer:
         print('Error arr2CLList() => ',self.ts[self.index])
         return False
 
-    """ def objectCall(self): #checked
-        if self.ts[self.index][0] == '.':
-            print('Match objectCall()-1 => ',self.ts[self.index])
-            self.index += 1
-            if self.ts[self.index][0] == 'Identifier':
-                print('Match objectCall()-2 => ',self.ts[self.index])
-                self.index += 1
-                if self.objectCallList():
-                    return True
-        print('Error objectCall() => ',self.ts[self.index])
-        return False """
-
     def assign2(self): #checked
         if self.assign(): #
             return True
@@ -1613,7 +1659,7 @@ class SyntaxAnalyzer:
         print('Error assign2() => ',self.ts[self.index])
         return False
 
-    def incCall(self):
+    def incCall(self): #checked
         if self.ts[self.index][0] == '(' or self.ts[self.index][0] == '[':
             if self.ts[self.index][0] == '(':
                 if self.functionCall3(): #1396
@@ -1627,7 +1673,7 @@ class SyntaxAnalyzer:
             print('Error incCall() => ',self.ts[self.index])
             return False
         
-    def functionCall3(self):
+    def functionCall3(self): #checked
         if self.ts[self.index][0] == '(':
             print('Match functionCall3()-1 => ',self.ts[self.index])
             self.index += 1
@@ -1640,7 +1686,7 @@ class SyntaxAnalyzer:
         print('Error functionCall3() => ',self.ts[self.index])
         return False
     
-    def objectCall3(self):
+    def objectCall3(self): #checked
         if self.ts[self.index][0] == '.':
             print('Match objectCall3()-1 => ',self.ts[self.index])
             self.index += 1
@@ -1652,10 +1698,19 @@ class SyntaxAnalyzer:
         print('Error objectCall3() => ',self.ts[self.index])
         return False
     
-    def arr3(self):
+    def arr3(self): #checked
         if self.arr8(): #1361
-            return True
+            if self.arr3List():
+                return True
         print('Error arr3() => ',self.ts[self.index])
+        return False
+
+    def arr3List(self): #checked
+        if self.function3List(): #
+            return True
+        elif self.ts[self.index][0] == ';' or self.ts[self.index][0] == ',':
+            return True
+        print('Error arr3List() => ',self.ts[self.index])
         return False
              
     def T(self): #checked
@@ -1693,7 +1748,7 @@ class SyntaxAnalyzer:
         print('Error E_()-2 => ',self.ts[self.index])
         return False
     
-    def arrOEList(self):
+    def arrOEList(self): #checked
         if self.ts[self.index][0] == ']':
             print('Match arrOEList()-1 => ',self.ts[self.index])
             self.index += 1
@@ -1703,12 +1758,15 @@ class SyntaxAnalyzer:
             print('Match arrOEList()-2 => ',self.ts[self.index])
             self.index += 1
             if self.OE(): #936
-                if self.arrOEValue(): #1559
-                    return True
+                if self.ts[self.index][0] == ']':
+                    print('Match arrOEList()-3 => ',self.ts[self.index])
+                    self.index += 1
+                    if self.arrOEValue(): #1559
+                        return True
         print('Error arrOEList() => ',self.ts[self.index])
         return False
     
-    def ACL(self):
+    def ACL(self): #checked
         if self.ts[self.index][0] == ',':
             print('Match ACL()-1 => ',self.ts[self.index])
             self.index += 1
@@ -1722,7 +1780,7 @@ class SyntaxAnalyzer:
         print('Error ACL()-2 => ',self.ts[self.index])
         return False
     
-    def arrConst4(self):
+    def arrConst4(self): #checked
         if self.ts[self.index][0] == ',':
             print('Match arrConst4() => ',self.ts[self.index])
             self.index += 1
@@ -1734,7 +1792,7 @@ class SyntaxAnalyzer:
         print('Error arrConst4() => ',self.ts[self.index])
         return False
     
-    def arr8List(self):
+    def arr8List(self): #checked
         if self.ts[self.index][0] == ']':
             print('Match arr8List()-1 => ',self.ts[self.index])
             self.index += 1
@@ -1746,10 +1804,11 @@ class SyntaxAnalyzer:
                 if self.ts[self.index][0] == ']':
                     print('Match arr8List()-3 => ',self.ts[self.index])
                     self.index += 1
+                    return True
         print('Error arr8List() => ',self.ts[self.index])
         return False
     
-    def function3List(self):
+    def function3List(self): #checked
         if self.ts[self.index][0] == '[' or self.ts[self.index][0] == '.':
             if self.ts[self.index][0] == '.':
                 print('Match function3List()-1 => ',self.ts[self.index])
@@ -1776,7 +1835,7 @@ class SyntaxAnalyzer:
         print('Error function3List()-2 => ',self.ts[self.index])
         return False
     
-    def arrOEValue(self):
+    def arrOEValue(self): #checked
         if self.ts[self.index][0] == '.' or self.ts[self.index][0] == 'Increment/Decrement Opeartor':
             if self.ts[self.index][0] == '.':
                 print('Match arrOEValue()-1 => ',self.ts[self.index])
@@ -1794,7 +1853,7 @@ class SyntaxAnalyzer:
         print('Error arrOEValue() => ',self.ts[self.index])
         return False
     
-    def functionArr(self):
+    def functionArr(self): #checked
         if self.ts[self.index][0] == '[':
             print('Match functionArr() => ',self.ts[self.index])
             self.index += 1 
@@ -1804,7 +1863,7 @@ class SyntaxAnalyzer:
         print('Error functionArr() => ',self.ts[self.index])
         return False
     
-    def functionArrList(self):
+    def functionArrList(self): #checked
         if self.ts[self.index][0] == ']':
             print('Match functionArrList()-1 => ',self.ts[self.index])
             self.index += 1 
@@ -1820,20 +1879,20 @@ class SyntaxAnalyzer:
         print('Error functionArrList() => ',self.ts[self.index])
         return False
 
-    def MF(self):
+    def MF(self): #checked
         if self.ts[self.index][0] == 'Identifier':
             print('Match MF() => ',self.ts[self.index])
             self.index += 1 
             if self.AMList3(): #
                 return True
         else:
-            if self.ts[self.index][0] in ['}','Arithmetaic Operator','Static','Virtual/Override','Identifier','Abstract','Class','Interface']:
+            if self.ts[self.index][0] in ['{','Arithmetaic Operator','Static','Virtual/Override','Void','Identifier','Abstract','Class','Interface']:
                 return True
         print('Error MF() => ',self.ts[self.index])
         return False
     
-    def AMList3(self):
-        if self.ts[self.index][0] == 'Arithmetaic Operator' or self.ts[self.index][0] == ';':
+    def AMList3(self): #checked
+        if self.ts[self.index][0] == 'Assignment Operator' or self.ts[self.index][0] == ';':
             if self.allInit(): #
                 if self.ts[self.index][0] == ';':
                     print('Match AMList3() => ',self.ts[self.index])
@@ -1845,8 +1904,8 @@ class SyntaxAnalyzer:
         print('Error AMList3() => ',self.ts[self.index])
         return False
 
-    def arr5(self):
-        if self.ts[self.index][0] == ']':
+    def arr5(self): #checked
+        if self.ts[self.index][0] == '[':
             print('Match arr5() => ',self.ts[self.index])
             self.index += 1 
             if self.arr5List(): #
@@ -1854,7 +1913,7 @@ class SyntaxAnalyzer:
         print('Error arr5() => ',self.ts[self.index])
         return False
 
-    def arr5List(self):
+    def arr5List(self): #checked
         if self.ts[self.index][0] == ']':
             print('Match arr5List()-1 => ',self.ts[self.index])
             self.index += 1 
