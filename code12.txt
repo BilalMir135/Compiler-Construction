@@ -6,7 +6,7 @@ class Program {
 	    //int x,y = 10,20;
 	    double pi = 3.142;
 	    Human obj = new Human();
-		int sum = x+y;
+		int sum = 4;
 	   //bool _isValid = true;
            Console.ReadKey();
 	

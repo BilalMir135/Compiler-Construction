@@ -3,7 +3,7 @@ import syntaxAnalyzer
 import json
 
 #read code from file
-with open('code12.txt','r') as file:
+with open('code2.txt','r') as file:
     source_code = file.read()
 
 #create tokens

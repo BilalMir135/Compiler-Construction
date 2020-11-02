@@ -1,0 +1,360 @@
+class Program
+{
+     static void Main (string [] args)
+     {
+        int sum = 10;
+        int i = 10;
+        for(int i=0;i<10; i++)
+        {
+            for(int j=0;j >= 10; i--)
+            {
+                Console.WriteLine("Hello");
+            }
+        }
+        Obj obj = new Obj(age, name);
+
+        float x = 10;
+        x= 15;
+        console.WriteLine(x);
+
+
+
+    }
+}
+
+
+======================================================================================================================================
+
+
+class Program
+{
+     static void Main (string [] args)
+     {
+        int sum = 10;
+        int i = 10;
+        for(int i=0;i<10; i = i+2)
+        {
+            for(int j=0;j >= 10 && j <= 5; i--)
+            {
+                Console.WriteLine("Hello");
+            }
+        }
+        Obj obj = new Obj(age, name);
+
+        float x = 10;
+        x= 15;
+        console.WriteLine(x);
+
+
+
+    }
+}
+
+
+======================================================================================================================================
+
+class Program
+{
+     static void Main (string [] args)
+     {
+        int sum = 10;
+        int i = 10;
+        for(int i=0;i<10; i = i+2)
+        {
+            for(int j=0;j >= 10 && j <= 5; i--)
+            {
+                Console.WriteLine("Hello");
+            }
+        }
+        Obj obj = new Obj(age, name);
+        obj.nw();
+
+        float x = 10;
+        x= 15;
+        console.WriteLine(x);
+    }
+
+
+    public static add(int a){
+        int add = 10;
+
+        for(int j=0;j >= 10 && j <= 5; i--){
+                Console.WriteLine("Hello");
+        }
+
+        Console.WriteLine(add);
+    }
+}
+
+
+======================================================================================================================================
+
+
+
+class Program
+{
+     static void Main (string [] args)
+     {
+        int sum = 10;
+        int i = 10;
+        for(int i=0;i<10; i = i+2)
+        {
+            for(int j=0;j >= 10 && j <= 5; i--)
+            {
+                Console.WriteLine("Hello");
+            }
+        }
+        Obj obj = new Obj(age, name);
+        obj.nw();
+
+        float x = 10;
+        x= 15;
+        console.WriteLine(x);
+    }
+
+
+    public static add(int a){
+        int add = 10;
+
+        for(int j=0;j >= 10 && j <= 5; i--){
+                Console.WriteLine("Hello");
+        }
+
+        Console.WriteLine(add);
+    }
+}
+
+class Car {
+
+    static void Main (string [] args)
+     {
+        
+        Obj car = new Car();
+        car.model();
+
+    }
+
+}
+
+======================================================================================================================================
+
+
+class A {
+
+    static void Main (string [] args)
+     {
+        
+        Obj car = new Car();
+        car.model();
+
+    }
+
+}
+
+
+
+class B:A {
+
+    static void Main (string [] args)
+     {
+        
+        Obj car = new Car();
+        car.model();
+
+    }
+
+}
+
+
+======================================================================================================================================
+
+
+interface IAnimal 
+{
+  void animalSound();
+}
+
+
+class Pig : IAnimal 
+{
+  public void animalSound() 
+  {
+    Console.WriteLine("The pig says: wee wee");
+  }
+}
+
+class Program 
+{
+  static void Main(string[] args) 
+  {
+    Pig myPig = new Pig();
+    myPig.animalSound();
+  }
+}
+
+
+======================================================================================================================================
+
+class Program 
+{
+  static void Main(string[] args) 
+  {
+    Animal myAnimal = new Animal();
+    Animal myPig = new Pig();  
+    Animal myDog = new Dog();  
+
+    myAnimal.animalSound();
+    myPig.animalSound();
+    myDog.animalSound();
+  }
+}
+
+
+
+public class Car
+{
+  private string model;
+
+  static void Main(string[] args)
+  {
+    Car Ford = new Car("Mustang");
+    Console.WriteLine(Ford.model);
+  }
+}
+
+
+============================================================================
+
+public class Car
+{
+  private string model
+  
+
+  static void Main(string[] args)
+  {
+    float x =2;
+    float y = 9;
+    Car Ford = new Car("Mustang");
+    if(x){
+        if(y>4 && y<9){
+            for(x=2;x<5;x++){
+                continue;
+            }
+        }
+    Console.WriteLine(Ford.model);
+    }
+    else if(x < 10){
+        break;
+    }
+    else{
+    Console.WriteLine(Ford.model);
+    }
+  }
+public static int add(int a){
+        int add = 10;
+
+        for(int j=0;j >= 10 && j <= 5; i--){
+                Console.WriteLine("Hello");
+        }
+
+        return add
+    }
+}
+
+class A {
+
+    static void Main (string [] args)
+     {
+        
+        Obj car = new Car();
+        car.model();
+
+    }
+
+}
+
+
+
+class B:A {
+
+    static void Main (string [] args)
+     {
+        
+        Obj car = new Car();
+        car.model();
+
+    }
+
+}
+
+
+
+
+
+
+===============================================================================
+
+
+
+public class Car
+{
+  
+  static void Main(string[] args)
+  {
+    x.a.fun();
+    float y = 9;
+    Car Ford = new Car("Mustang");
+    if(x){
+        if(y.x.fn()>4 && y<9){
+            for(x=2;x<5;x++){
+                continue;
+            }
+        }
+        
+    Console.WriteLine(Ford.model);
+    }
+    else if(x < 10){
+        break;
+    }
+    else{
+    Console.WriteLine(Ford.model);
+    }
+  }
+public static int add(int a){
+        int add += 10;
+
+        for(int j=0;j >= 10 && j <= 5; i--){
+                Console.WriteLine("Hello");
+        }
+
+    int a = 10;    
+}
+
+}
+
+class A {
+
+    static void Main (string [] args)
+     {
+        
+        Obj car = new Car(age , name);
+        car.model(name);
+        car.tyre.boltnut.model();
+
+    }
+
+}
+
+
+
+class B:A {
+
+    static void Main (string [] args)
+     {
+        
+        Obj car = new Car();
+        car.model();
+
+    }
+
+}
